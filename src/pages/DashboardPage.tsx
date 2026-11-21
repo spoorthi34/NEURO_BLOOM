@@ -13,7 +13,7 @@ import logo from "@/assets/logo.png";
 import robotImg from "@/assets/robot-mascot.png";
 import dashboardBg from "@/assets/dashboard-bg.jpeg";
 import { toast } from "sonner";
-import WikiDiagramCard from "@/components/WikiDiagramCard";
+import ConceptMindMapCard from "@/components/ConceptMindMapCard";
 
 // Configure PDF.js worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs`;
@@ -220,6 +220,7 @@ const DashboardPage: React.FC = () => {
   const [focusedCardIndex, setFocusedCardIndex] = useState(0);
   const [dyslexiaFont, setDyslexiaFont] = useState(false);
   const [highlightBD, setHighlightBD] = useState(false);
+  const [bionicReading, setBionicReading] = useState(false);
 
   // Audio Playback
   const [isPlayingAll, setIsPlayingAll] = useState(false);
@@ -403,26 +404,46 @@ const DashboardPage: React.FC = () => {
   };
 
   const renderDyslexiaText = (text: string) => {
+    const renderBDSpan = (str: string) => {
+      if (!highlightBD) return str;
+      const parts = str.split(/([bdBD])/g);
+      return parts.map((part, i) => {
+        if (part.toLowerCase() === "b") {
+          return (
+            <span key={i} className="text-sky-600 dark:text-sky-400 font-bold underline decoration-sky-400">
+              {part}
+            </span>
+          );
+        }
+        if (part.toLowerCase() === "d") {
+          return (
+            <span key={i} className="text-rose-600 dark:text-rose-400 font-bold underline decoration-rose-400">
+              {part}
+            </span>
+          );
+        }
+        return part;
+      });
+    };
+
+    if (bionicReading) {
+      const words = text.split(/(\s+)/);
+      return words.map((word, wIdx) => {
+        if (/^\s+$/.test(word)) return word;
+        const mid = Math.ceil(word.length / 2);
+        const boldPart = word.slice(0, mid);
+        const rest = word.slice(mid);
+        return (
+          <span key={wIdx}>
+            <strong className="font-extrabold text-foreground">{boldPart}</strong>
+            {renderBDSpan(rest)}
+          </span>
+        );
+      });
+    }
+
     if (!highlightBD) return text;
-    // Highlight 'b' and 'd' with subtle colors to avoid mirroring
-    const parts = text.split(/([bdBD])/g);
-    return parts.map((part, i) => {
-      if (part.toLowerCase() === "b") {
-        return (
-          <span key={i} className="text-sky-600 dark:text-sky-400 font-bold underline decoration-sky-400">
-            {part}
-          </span>
-        );
-      }
-      if (part.toLowerCase() === "d") {
-        return (
-          <span key={i} className="text-rose-600 dark:text-rose-400 font-bold underline decoration-rose-400">
-            {part}
-          </span>
-        );
-      }
-      return part;
-    });
+    return renderBDSpan(text);
   };
 
   const isLight = theme === "light";
@@ -971,7 +992,12 @@ const DashboardPage: React.FC = () => {
                                 animate={{ opacity: 1, height: "auto" }}
                                 className="mt-2 pt-2 border-t border-slate-100 dark:border-white/10"
                               >
-                                <WikiDiagramCard topics={[...card.keywords, card.title]} />
+                                <ConceptMindMapCard
+                                  title={card.title}
+                                  explanation={card.explanation}
+                                  keywords={card.keywords}
+                                  diagramType={card.diagram}
+                                />
                                 <button
                                   onClick={(e) => {
                                     e.stopPropagation();
@@ -1198,6 +1224,22 @@ const DashboardPage: React.FC = () => {
                             className="w-4 h-4 accent-[#e11d48] rounded"
                           />
                         </div>
+
+                        {/* Bionic Reading */}
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <span className="text-xs font-semibold text-foreground block">
+                              Bionic Fast Reading
+                            </span>
+                            <span className="text-[10px] text-muted-foreground">ADHD fixation highlights</span>
+                          </div>
+                          <input
+                            type="checkbox"
+                            checked={bionicReading}
+                            onChange={(e) => setBionicReading(e.target.checked)}
+                            className="w-4 h-4 accent-[#e11d48] rounded"
+                          />
+                        </div>
                       </div>
 
                       {/* Focus Timer Widget */}
@@ -1332,7 +1374,7 @@ const DashboardPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="grid sm:grid-cols-3 gap-6">
+              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className={`p-6 rounded-3xl border text-center ${isLight ? "bg-white border-slate-200 shadow-md" : "bg-[#131528]/85 border-white/10"}`}>
                   <Eye className="mx-auto text-rose-500 mb-3" size={32} />
                   <h4 className="font-display font-bold text-base mb-1">Dyslexia Reading Mode</h4>
@@ -1347,6 +1389,23 @@ const DashboardPage: React.FC = () => {
                     className="w-full bg-rose-500/15 text-rose-500 hover:bg-rose-500/25 py-2 rounded-xl text-xs font-bold"
                   >
                     {dyslexiaFont ? "Disable Font" : "Enable Lexend Font"}
+                  </button>
+                </div>
+
+                <div className={`p-6 rounded-3xl border text-center ${isLight ? "bg-white border-slate-200 shadow-md" : "bg-[#131528]/85 border-white/10"}`}>
+                  <Sparkles className="mx-auto text-purple-500 mb-3" size={32} />
+                  <h4 className="font-display font-bold text-base mb-1">Bionic Fast Reading</h4>
+                  <p className="text-xs text-muted-foreground mb-4">
+                    Fixation guidance bolds initial letters to fast-track comprehension.
+                  </p>
+                  <button
+                    onClick={() => {
+                      setBionicReading(!bionicReading);
+                      setActiveFeature("smart");
+                    }}
+                    className="w-full bg-purple-500/15 text-purple-500 hover:bg-purple-500/25 py-2 rounded-xl text-xs font-bold"
+                  >
+                    {bionicReading ? "Disable Bionic" : "Enable Bionic"}
                   </button>
                 </div>
 
