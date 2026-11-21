@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowRight, Compass } from "lucide-react";
-import StudentFocusIllustration from "@/components/StudentFocusIllustration";
+import LearnerHeroVisual from "@/components/LearnerHeroVisual";
 
 const HeroSection = () => {
   const navigate = useNavigate();
@@ -66,14 +66,14 @@ const HeroSection = () => {
             </div>
           </motion.div>
 
-          {/* Right Column: Student Concentrating & Studying */}
+          {/* Right Column: 3D Student Learner with Animated Words & Understanding Message */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9, x: 30 }}
             animate={{ opacity: 1, scale: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
             className="lg:col-span-5 flex justify-center"
           >
-            <StudentFocusIllustration />
+            <LearnerHeroVisual />
           </motion.div>
         </div>
       </div>
