@@ -1,0 +1,71 @@
+{
+  "version": 1,
+  "sdk_version": "0.26.1",
+  "path": "/functions/v1/mcp",
+  "auth": {
+    "type": "none"
+  },
+  "mcp": {
+    "server": {
+      "name": "bloom-ai-learning",
+      "version": "0.1.0",
+      "title": "Bloom AI Learning"
+    },
+    "tools": [
+      {
+        "name": "get_app_overview",
+        "title": "Get app overview",
+        "description": "Return an overview of Bloom AI Learning: what it is, who it is for, and its main pages.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_features",
+        "title": "List features",
+        "description": "List the public learning features of Bloom AI Learning, optionally filtered by a search term.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "description": "Optional case-insensitive filter applied to feature titles and descriptions."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_learning_workflow",
+        "title": "Get learning workflow",
+        "description": "Return the step-by-step workflow a learner follows in Bloom AI Learning, from upload to tracking progress.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
