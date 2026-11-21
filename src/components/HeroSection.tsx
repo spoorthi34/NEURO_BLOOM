@@ -3,7 +3,11 @@ import { motion } from "framer-motion";
 import { ArrowRight, Compass } from "lucide-react";
 import LearnerHeroVisual from "@/components/LearnerHeroVisual";
 
-const HeroSection = () => {
+interface HeroSectionProps {
+  onReplayIntro?: () => void;
+}
+
+const HeroSection: React.FC<HeroSectionProps> = ({ onReplayIntro }) => {
   const navigate = useNavigate();
 
   const scrollToFeatures = () => {
@@ -28,10 +32,21 @@ const HeroSection = () => {
             transition={{ duration: 0.8 }}
             className="lg:col-span-7"
           >
-            {/* Tagline Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/15 border border-white/25 text-white text-xs font-semibold mb-6 backdrop-blur-md">
-              <span className="w-2 h-2 rounded-full bg-amber-300 animate-pulse" />
-              Where Every Mind Learns Clearly
+            {/* Tagline Badge + Replay Intro */}
+            <div className="flex flex-wrap items-center gap-3 mb-6">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/15 border border-white/25 text-white text-xs font-semibold backdrop-blur-md">
+                <span className="w-2 h-2 rounded-full bg-amber-300 animate-pulse" />
+                Where Every Mind Learns Clearly
+              </div>
+
+              {onReplayIntro && (
+                <button
+                  onClick={onReplayIntro}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/20 hover:bg-white/30 border border-white/30 text-white text-xs font-semibold backdrop-blur-md transition-all active:scale-95 shadow-sm"
+                >
+                  <span>✨ Replay Topic Intro</span>
+                </button>
+              )}
             </div>
 
             {/* Main Title matching Image 3: large, bold, italicized */}
